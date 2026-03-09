@@ -4,6 +4,8 @@ import com.ledsun.ainewstinder.data.model.FeedItem
 import com.ledsun.ainewstinder.data.model.RssItem
 import com.ledsun.ainewstinder.db.FeedItemDao
 import com.ledsun.ainewstinder.rss.RssParser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import java.net.HttpURLConnection
 import java.net.URL
 import java.time.Instant
@@ -25,12 +27,12 @@ class FeedService(private val dao: FeedItemDao) {
         dao.deleteOlderThan(Instant.now().minus(7, ChronoUnit.DAYS))
     }
 
-    private fun fetch(): List<RssItem> {
+    private suspend fun fetch(): List<RssItem> = withContext(Dispatchers.IO) {
         val url = URL(RSS_URL)
         val connection = url.openConnection() as HttpURLConnection
         connection.connectTimeout = 10_000
         connection.readTimeout = 15_000
-        return try {
+        try {
             connection.connect()
             RssParser.parse(connection.inputStream)
         } finally {

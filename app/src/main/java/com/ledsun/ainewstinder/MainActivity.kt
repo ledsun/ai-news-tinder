@@ -18,15 +18,14 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
 
-        val vm = viewModel
-        if (vm.autoRefreshOnLaunch.value) {
-            vm.refresh()
+        if (viewModel.autoRefreshOnLaunch.value) {
+            viewModel.refresh()
         }
 
         setContent {
             MaterialTheme {
                 Surface {
-                    AppScaffold(viewModel = vm)
+                    AppScaffold(viewModel = viewModel)
                 }
             }
         }

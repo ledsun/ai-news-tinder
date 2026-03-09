@@ -9,8 +9,7 @@ import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Refresh
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
-import androidx.compose.ui.Alignment
-import androidx.compose.ui.Modifier
+import androidx.compose.ui.Alignmentimport androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.unit.dp
@@ -23,7 +22,16 @@ import com.ledsun.ainewstinder.viewmodel.FeedViewModel
 fun InboxScreen(viewModel: FeedViewModel) {
     val items by viewModel.allItems.collectAsState()
     val isLoading by viewModel.isLoading.collectAsState()
+    val refreshError by viewModel.refreshError.collectAsState()
     val context = LocalContext.current
+    val snackbarHostState = remember { SnackbarHostState() }
+
+    LaunchedEffect(refreshError) {
+        refreshError?.let {
+            snackbarHostState.showSnackbar(it)
+            viewModel.clearRefreshError()
+        }
+    }
 
     Scaffold(
         topBar = {
@@ -42,7 +50,8 @@ fun InboxScreen(viewModel: FeedViewModel) {
                     }
                 }
             )
-        }
+        },
+        snackbarHost = { SnackbarHost(snackbarHostState) }
     ) { paddingValues ->
         if (items.isEmpty()) {
             Box(

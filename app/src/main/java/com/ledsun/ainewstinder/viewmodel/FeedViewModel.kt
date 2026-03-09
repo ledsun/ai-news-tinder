@@ -34,6 +34,9 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
     private val _isLoading = MutableStateFlow(false)
     val isLoading: StateFlow<Boolean> = _isLoading.asStateFlow()
 
+    private val _refreshError = MutableStateFlow<String?>(null)
+    val refreshError: StateFlow<String?> = _refreshError.asStateFlow()
+
     private val _feedUrl = MutableStateFlow(RSS_URL)
     val feedUrl: StateFlow<String> = _feedUrl.asStateFlow()
 
@@ -43,14 +46,19 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
     fun refresh() {
         viewModelScope.launch {
             _isLoading.value = true
+            _refreshError.value = null
             try {
                 feedService.fetchAndSave()
             } catch (e: Exception) {
-                // ignore errors silently in MVP
+                _refreshError.value = e.message ?: "Unknown error"
             } finally {
                 _isLoading.value = false
             }
         }
+    }
+
+    fun clearRefreshError() {
+        _refreshError.value = null
     }
 
     fun setRead(id: Long, isRead: Boolean) {
