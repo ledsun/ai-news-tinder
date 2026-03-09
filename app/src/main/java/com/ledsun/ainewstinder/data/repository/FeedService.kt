@@ -13,6 +13,9 @@ import java.time.temporal.ChronoUnit
 
 const val RSS_URL = "https://ledsun.github.io/rss-fusion/merged.xml"
 
+private const val CONNECT_TIMEOUT_MS = 10_000
+private const val READ_TIMEOUT_MS = 15_000
+
 class FeedService(private val dao: FeedItemDao) {
 
     suspend fun fetchAndSave() {
@@ -30,8 +33,8 @@ class FeedService(private val dao: FeedItemDao) {
     private suspend fun fetch(): List<RssItem> = withContext(Dispatchers.IO) {
         val url = URL(RSS_URL)
         val connection = url.openConnection() as HttpURLConnection
-        connection.connectTimeout = 10_000
-        connection.readTimeout = 15_000
+        connection.connectTimeout = CONNECT_TIMEOUT_MS
+        connection.readTimeout = READ_TIMEOUT_MS
         try {
             connection.connect()
             RssParser.parse(connection.inputStream)

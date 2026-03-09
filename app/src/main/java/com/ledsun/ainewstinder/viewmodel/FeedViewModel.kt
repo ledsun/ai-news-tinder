@@ -4,6 +4,7 @@ import android.app.Application
 import android.content.ClipData
 import android.content.ClipboardManager
 import android.content.Context
+import androidx.core.content.edit
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.viewModelScope
 import com.ledsun.ainewstinder.db.AppDatabase
@@ -17,10 +18,14 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 
+private const val PREFS_NAME = "ai_news_tinder_prefs"
+private const val KEY_AUTO_REFRESH = "auto_refresh_on_launch"
+
 class FeedViewModel(application: Application) : AndroidViewModel(application) {
 
     private val dao = AppDatabase.getInstance(application).feedItemDao()
     private val feedService = FeedService(dao)
+    private val prefs = application.getSharedPreferences(PREFS_NAME, Context.MODE_PRIVATE)
 
     val allItems: StateFlow<List<FeedItem>> = dao.getAllItems()
         .stateIn(viewModelScope, SharingStarted.WhileSubscribed(5000), emptyList())
@@ -40,7 +45,7 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
     private val _feedUrl = MutableStateFlow(RSS_URL)
     val feedUrl: StateFlow<String> = _feedUrl.asStateFlow()
 
-    private val _autoRefreshOnLaunch = MutableStateFlow(true)
+    private val _autoRefreshOnLaunch = MutableStateFlow(prefs.getBoolean(KEY_AUTO_REFRESH, true))
     val autoRefreshOnLaunch: StateFlow<Boolean> = _autoRefreshOnLaunch.asStateFlow()
 
     fun refresh() {
@@ -90,5 +95,6 @@ class FeedViewModel(application: Application) : AndroidViewModel(application) {
 
     fun setAutoRefreshOnLaunch(enabled: Boolean) {
         _autoRefreshOnLaunch.value = enabled
+        prefs.edit { putBoolean(KEY_AUTO_REFRESH, enabled) }
     }
 }
