@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string name="app_name">AI News Tinder</string>
+    <string name="tab_inbox">受信箱</string>
+    <string name="tab_good">良かった</string>
+    <string name="tab_excluded">除外候補</string>
+    <string name="tab_settings">設定</string>
+    <string name="mark_good">良かった</string>
+    <string name="mark_excluded">除外候補</string>
+    <string name="mark_read">既読</string>
+    <string name="open_article">記事を開く</string>
+    <string name="hatena_bookmark">はてブ</string>
+    <string name="copy_and_clear">コピーしてクリア</string>
+    <string name="clear">クリア</string>
+    <string name="feed_url">フィードURL</string>
+    <string name="auto_refresh_on_launch">起動時に更新</string>
+    <string name="refresh_interval">更新間隔</string>
+    <string name="data_retention">データ保持期間: 7日間</string>
+    <string name="no_items">記事がありません</string>
+    <string name="excluded_items_count">%d件</string>
+    <string name="copied">URLをコピーしました</string>
+    <string name="cleared">除外候補をクリアしました</string>
+</resources>
